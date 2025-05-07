@@ -5,43 +5,76 @@
 .classpath
 .project
 .settings/
-.DS_Store
-./data/*
+.DS_Store # For macOS users at the root
 
-# Build output
+# User added, for project specific data
+data/
+
+# Java / Maven / Spring Boot specific
 target/
-build/
+build/ # General build output, can be used by Spring Boot/Gradle
+*.log
+*.jar
+*.war
 
-# Maven
+# Maven specific
 .mvn/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 release.properties
 dependency-reduced-pom.xml
-bildSpec.yaml
+# buildSpec.yaml # Or other CI/CD specific files like buildspec.yml
 
-# Logs
-*.log
-
-# Node.js / Next.js specific
-frontend/node_modules/
-frontend/.next/
-frontend/out/
-frontend/build/
-frontend/.DS_Store
-
-# NPM
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnp/
-.pnp.js
-
-# Environment variables
+# Environment variables at root (if any)
 .env
 .env*.local
 
-# Other
+# Temporary files
 *.tmp
 *.swp
+
+
+# IntelliJ IDEA specific (if not covered by .idea/)
+*.ipr
+modules.xml
+
+# front end
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.*
+frontend/.yarn/*
+frontend/.yarn/patches
+frontend/.yarn/plugins
+frontend/.yarn/releases
+frontend/.yarn/versions
+
+# testing
+frontend/coverage
+
+# next.js
+frontend/.next/
+frontend/out/
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/*.pem
+
+# debug
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+frontend/.env*
+
+# vercel
+frontend/.vercel
+
+# typescript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
