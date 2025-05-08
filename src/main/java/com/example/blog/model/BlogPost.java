@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 public class BlogPost {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO) // Consider GenerationType.IDENTITY for H2/MySQL/Postgres
     private Long id;
 
     @NotBlank(message = "Title cannot be blank")
@@ -24,8 +26,9 @@ public class BlogPost {
     @Lob // For potentially long content
     private String content;
 
-    @Size(max = 100, message = "Author name cannot exceed 100 characters")
-    private String author; // Optional, so no @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "user_id") // Name of the foreign key column in blog_post table
+    private User author; 
 
     private LocalDateTime publicationDate;
 
@@ -33,7 +36,8 @@ public class BlogPost {
     public BlogPost() {
     }
 
-    public BlogPost(String title, String content, String author, LocalDateTime publicationDate) {
+    // Updated constructor
+    public BlogPost(String title, String content, User author, LocalDateTime publicationDate) {
         this.title = title;
         this.content = content;
         this.author = author;
@@ -65,11 +69,12 @@ public class BlogPost {
         this.content = content;
     }
 
-    public String getAuthor() {
+    // Updated getter and setter for author
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 

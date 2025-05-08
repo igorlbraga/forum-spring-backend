@@ -17,12 +17,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useRouter } from 'next/navigation'; // For navigation
+import { useAuth } from '@/contexts/AuthContext'; // Import useAuth
+import { createBlogPost } from '@/lib/apiService'; // Import createBlogPost
+import { CreatePostRequest } from '@/types'; // Import CreatePostRequest
 
 // 1. Define the Zod schema for form validation
 const formSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters long." }),
   content: z.string().min(10, { message: "Content must be at least 10 characters long." }),
-  author: z.string().optional(), // Author is optional
+  // Author field removed as it will be determined by the backend via JWT
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -35,27 +38,23 @@ export default function CreatePostForm() {
     defaultValues: {
       title: "",
       content: "",
-      author: "",
+      
     },
   });
 
   // 3. Define the submit handler
+  const { isAuthenticated, isLoading: authLoading } = useAuth(); // Get auth state
+
+  // 3. Define the submit handler
   async function onSubmit(values: FormValues) {
     try {
-      const response = await fetch("http://localhost:8080/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: "Failed to create post. Please try again." }));
-        throw new Error(errorData.message || "Failed to create post.");
+      if (!isAuthenticated) {
+        toast.error("You must be logged in to create a post.");
+        // Optionally, redirect to login or disable form further up
+        return;
       }
-
-      const newPost = await response.json();
+      const postData: CreatePostRequest = { title: values.title, content: values.content };
+      const newPost = await createBlogPost(postData); // Use apiService
       toast.success("Blog post created successfully!");
       
       // Navigate to the new post's page or to the home page
@@ -113,23 +112,8 @@ export default function CreatePostForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="author"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Author (Optional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter author name" {...field} />
-              </FormControl>
-              <FormDescription>
-                The author of the blog post.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        {/* Author field removed */}
+        <Button type="submit" disabled={form.formState.isSubmitting || !isAuthenticated || authLoading}>
           {form.formState.isSubmitting ? "Creating..." : "Create Post"}
         </Button>
       </form>
