@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner"; // Added import for Toaster
 import { Providers } from "./providers"; // Import the new Providers component
+import Navbar from "@/components/Navbar"; // Import the Navbar component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {children}
+          <Navbar />
+          <main className="pt-16"> {/* Add padding-top to main content to avoid overlap with sticky navbar */}
+            {children}
+          </main>
           <Toaster richColors position="top-right" /> {/* Toaster can be inside or outside Providers based on needs */}
         </Providers>
       </body>
