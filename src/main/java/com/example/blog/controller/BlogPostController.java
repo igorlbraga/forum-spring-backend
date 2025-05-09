@@ -1,6 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.dto.UpdatePostDto;
+import com.example.blog.dto.BlogPostSummaryDTO;
 import com.example.blog.model.BlogPost;
 import com.example.blog.model.User;
 import com.example.blog.repository.BlogPostRepository;
@@ -34,10 +35,10 @@ public class BlogPostController {
     @Autowired
     private UserRepository userRepository; // Added UserRepository
 
-    // Get all blog posts
+    // Get all blog posts (summaries)
     @GetMapping
-    public List<BlogPost> getAllBlogPosts() {
-        return blogPostRepository.findAll();
+    public List<BlogPostSummaryDTO> getAllBlogPosts() {
+        return blogPostRepository.findAllPostSummaries();
     }
 
     // Create a new blog post

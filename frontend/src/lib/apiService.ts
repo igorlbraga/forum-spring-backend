@@ -1,5 +1,5 @@
 import { LoginRequest, JwtAuthenticationResponse, ApiErrorResponse, RegisterRequest } from '@/types/auth';
-import { BlogPost, CreatePostRequest, UpdatePostRequest } from '@/types/index'; // Import blog post types
+import { BlogPost, CreatePostRequest, UpdatePostRequest, Comment } from '@/types/index'; // Import blog post and comment types
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'; // Define your API base URL
 
@@ -137,6 +137,65 @@ export async function updateBlogPost(postId: number, postData: UpdatePostRequest
   }
   return responseData as BlogPost;
 }
+
+// --- Comment API Functions ---
+
+export async function getComments(postId: number): Promise<Comment[]> {
+  const response = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({})) as ApiErrorResponse;
+    throw new Error(errorData.message || `Failed to fetch comments for post ${postId}: ${response.status}`);
+  }
+  return response.json() as Promise<Comment[]>;
+}
+
+export async function createComment(postId: number, commentData: { content: string }): Promise<Comment> {
+  const response = await authenticatedFetch(`/api/posts/${postId}/comments`, {
+    method: 'POST',
+    body: JSON.stringify(commentData),
+  });
+
+  const responseData = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const errorDetails = responseData as ApiErrorResponse;
+    throw new Error(errorDetails.message || `Failed to create comment for post ${postId}: ${response.status}`);
+  }
+  return responseData as Comment;
+}
+
+export async function deleteComment(commentId: number): Promise<void> {
+  const response = await authenticatedFetch(`/api/comments/${commentId}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    let errorDetails: ApiErrorResponse | null = null;
+    try {
+      errorDetails = await response.json();
+    } catch (e) {
+      // Ignore if parsing fails (e.g. for 204 No Content)
+    }
+    throw new Error(errorDetails?.message || `Failed to delete comment ${commentId}: ${response.status}`);
+  }
+  // No return needed for a successful delete
+}
+
+export async function updateComment(commentId: number, commentData: { content: string }): Promise<Comment> {
+  const response = await authenticatedFetch(`/api/comments/${commentId}`, {
+    method: 'PUT',
+    body: JSON.stringify(commentData),
+  });
+
+  const responseData = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const errorDetails = responseData as ApiErrorResponse;
+    throw new Error(errorDetails.message || `Failed to update comment ${commentId}: ${response.status}`);
+  }
+  return responseData as Comment;
+}
+
 
 /**
  * Types like LoginRequest, RegisterRequest, JwtAuthenticationResponse 

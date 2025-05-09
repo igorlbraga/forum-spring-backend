@@ -1,8 +1,8 @@
 'use client'; // Convert to Client Component
 
-import { BlogPost, User } from "@/types";
+import { BlogPost, User } from "@/types"; // Comment type removed
 import Link from "next/link";
-import { getBlogPostById, deleteBlogPost } from "@/lib/apiService";
+import { getBlogPostById, deleteBlogPost } from "@/lib/apiService"; // Comment API functions removed
 import {
   Card,
   CardContent,
@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+// Textarea, Avatar and icons removed
+
+import CommentSection from '@/components/CommentSection'; // Import the new component
 
 // Interface for props is not needed for client component fetching its own data via params
 
@@ -30,6 +33,8 @@ export default function SinglePostPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
+  // Comment states removed
+
   useEffect(() => {
     if (postIdFromParams) {
       const numericId = parseInt(postIdFromParams, 10);
@@ -42,9 +47,11 @@ export default function SinglePostPage() {
       const fetchPost = async () => {
         setLoading(true);
         setError(null);
+        // Comment loading states removed
         try {
           const fetchedPost = await getBlogPostById(numericId);
           setPost(fetchedPost);
+          // Fetch comments logic removed - handled by CommentSection
         } catch (err: any) {
           console.error(`Failed to fetch post ${numericId}:`, err);
           if (err.message.includes("404") || (err.response && err.response.status === 404)) {
@@ -55,6 +62,7 @@ export default function SinglePostPage() {
           setPost(null);
         }
         setLoading(false);
+        // Comment loading state removed
       };
       fetchPost();
     }
@@ -144,6 +152,12 @@ export default function SinglePostPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Render CommentSection if post and numericId are available */}
+      {post && !isNaN(parseInt(postIdFromParams, 10)) && (
+        <CommentSection postId={parseInt(postIdFromParams, 10)} />
+      )}
+
     </main>
   );
 }

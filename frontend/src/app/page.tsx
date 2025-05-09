@@ -24,6 +24,8 @@ export default async function HomePage() {
     // posts will remain an empty array
   }
 
+  console.log("Posts:", posts);
+
   return (
     <main className="container mx-auto p-4 md:p-8">
       <h1 className="text-3xl font-bold text-center mb-8">Blog Posts</h1>
@@ -61,7 +63,7 @@ export default async function HomePage() {
                   </span>
                   <span className="flex items-center text-gray-500">
                     <MessageCircle className="mr-1 h-4 w-4" />
-                    0 Respostas {/* Placeholder */}
+                    {(post.commentCount || 0) === 1 ? "1 Resposta" : `${post.commentCount || 0} Respostas`}
                   </span>
                 </div>
               </CardContent>
