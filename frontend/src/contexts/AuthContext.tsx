@@ -6,16 +6,14 @@ interface DecodedJwtPayload {
   id: number;  // User ID from a custom 'id' claim in the JWT
   iat?: number;
   exp?: number;
-  // Add other claims like roles if they exist in your JWT
-  // roles?: string[];
+  roles?: string[]; // Added roles claim
 }
 
 // This is the User object shape we will use throughout the app via useAuth()
 interface User {
   id: number;      // Numeric user ID
   username: string; // Username
-  // Include other properties if needed, e.g., roles
-  // roles?: string[];
+  roles?: string[]; // Added roles
 }
 
 interface AuthState {
@@ -23,6 +21,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAdmin: boolean; // Added isAdmin flag
   login: (token: string) => void;
   logout: () => void;
 }
@@ -44,7 +43,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (storedToken) {
       try {
         const decodedPayload = jwtDecode<DecodedJwtPayload>(storedToken);
-        const appUser: User = { id: decodedPayload.id, username: decodedPayload.sub };
+        const appUser: User = { 
+          id: decodedPayload.id, 
+          username: decodedPayload.sub, 
+          roles: decodedPayload.roles || [] 
+        };
         // Optional: Check if token is expired before setting (requires 'exp' in User interface)
         // if (decodedUser.exp && decodedUser.exp * 1000 < Date.now()) {
         //   localStorage.removeItem('authToken');
@@ -65,7 +68,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = (newToken: string) => {
     try {
       const decodedPayload = jwtDecode<DecodedJwtPayload>(newToken);
-      const appUser: User = { id: decodedPayload.id, username: decodedPayload.sub };
+      const appUser: User = { 
+        id: decodedPayload.id, 
+        username: decodedPayload.sub, 
+        roles: decodedPayload.roles || [] 
+      };
       localStorage.setItem('authToken', newToken);
       setToken(newToken);
       setUser(appUser);
@@ -87,8 +94,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // window.location.href = '/'; 
   };
 
+  console.log("Current User", user)
+
   return (
-    <AuthContext.Provider value={{ token, user, isAuthenticated: !!token && !!user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ 
+      token, 
+      user, 
+      isAuthenticated: !!token && !!user, 
+      isLoading, 
+      isAdmin: !!user && !!user.roles && user.roles.includes('ROLE_ADMIN'), // Calculate isAdmin
+      login, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

@@ -81,10 +81,13 @@ public class BlogPostController {
             // Or handle as an internal server error, or disallow deletion of posts without authors
              throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Post has no author, cannot verify ownership.");
         }
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
         
-        if (!blogPostToDelete.getAuthor().getUsername().equals(currentUsername)) {
-            // Potentially also check for an ADMIN role here in the future
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // User is not the author
+        // User must be the author OR an admin to delete the post
+        if (!isAdmin && !blogPostToDelete.getAuthor().getUsername().equals(currentUsername)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // User is not the author and not an admin
         }
 
         blogPostRepository.deleteById(id);
@@ -103,11 +106,14 @@ public class BlogPostController {
         BlogPost blogPostToUpdate = blogPostRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
 
-        // Authorization check: Ensure the authenticated user is the author of the post
-        if (blogPostToUpdate.getAuthor() == null || !blogPostToUpdate.getAuthor().getId().equals(authenticatedUser.getId())) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+        // Authorization check: User must be the author OR an admin to update the post
+        if (!isAdmin && (blogPostToUpdate.getAuthor() == null || !blogPostToUpdate.getAuthor().getId().equals(authenticatedUser.getId()))) {
             // Log this attempt for security auditing if necessary
             // System.out.println("User " + currentUsername + " (ID: " + authenticatedUser.getId() + ") attempted to update post " + id + " owned by user " + (blogPostToUpdate.getAuthor() != null ? blogPostToUpdate.getAuthor().getId() : "<unknown>"));
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // User is not the author
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // User is not the author and not an admin
         }
 
         // Update the post fields

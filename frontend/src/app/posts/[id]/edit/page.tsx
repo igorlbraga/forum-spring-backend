@@ -28,7 +28,7 @@ export default function EditPostPage() {
   const params = useParams();
   const postId = parseInt(params.id as string, 10);
 
-  const { user: authUser, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user: authUser, isAuthenticated, isLoading: authLoading, isAdmin } = useAuth();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,15 +53,15 @@ export default function EditPostPage() {
     }
 
     if (authLoading) { // Wait for authentication to resolve
-        return;
+      return;
     }
 
     if (!isAuthenticated) {
-        setError("You must be logged in to edit a post.");
-        setLoading(false);
-        setIsAuthorized(false);
-        // router.push('/login'); // Optional: redirect to login
-        return;
+      setError("You must be logged in to edit a post.");
+      setLoading(false);
+      setIsAuthorized(false);
+      // router.push('/login'); // Optional: redirect to login
+      return;
     }
 
     const fetchPostAndCheckAuth = async () => {
@@ -69,8 +69,10 @@ export default function EditPostPage() {
         setLoading(true);
         const fetchedPost = await getBlogPostById(postId);
         setPost(fetchedPost);
-        
-        if (authUser && fetchedPost.author && authUser.username === fetchedPost.author.username) {
+
+        const isOwnerOrAdmin = authUser && fetchedPost.author && (authUser.username === fetchedPost.author.username || isAdmin);
+
+        if (isOwnerOrAdmin) {
           form.reset({ title: fetchedPost.title, content: fetchedPost.content });
           setIsAuthorized(true);
         } else {
@@ -91,8 +93,8 @@ export default function EditPostPage() {
 
   async function onSubmit(values: EditPostFormValues) {
     if (!isAuthorized || !post) {
-        toast.error("Cannot update post. Not authorized or post data missing.");
-        return;
+      toast.error("Cannot update post. Not authorized or post data missing.");
+      return;
     }
     setIsUpdating(true);
     setError(null);
@@ -126,7 +128,7 @@ export default function EditPostPage() {
       </div>
     );
   }
-  
+
   if (error && !isAuthorized) { // If there was an error AND they are not authorized
     return (
       <div className="container mx-auto p-4 text-center">
@@ -140,15 +142,15 @@ export default function EditPostPage() {
 
   if (!isAuthorized && !loading) { // Explicitly not authorized after loading and auth check
     return (
-        <div className="container mx-auto p-4 text-center">
-            <p className="text-red-500">You are not authorized to edit this post.</p>
-            <Link href={`/posts/${postId}`} className="text-blue-500 hover:underline mt-2 inline-block">Back to Post</Link>
-            <br />
-            <Link href="/" className="text-blue-500 hover:underline mt-2 inline-block">Back to Home</Link>
-        </div>
+      <div className="container mx-auto p-4 text-center">
+        <p className="text-red-500">You are not authorized to edit this post.</p>
+        <Link href={`/posts/${postId}`} className="text-blue-500 hover:underline mt-2 inline-block">Back to Post</Link>
+        <br />
+        <Link href="/" className="text-blue-500 hover:underline mt-2 inline-block">Back to Home</Link>
+      </div>
     );
   }
-  
+
   if (!post) { // Should not happen if authorized, but as a safeguard
     return <div className="container mx-auto p-4 text-center">Post data not available.</div>;
   }

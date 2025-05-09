@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 export default function SinglePostPage() {
   const params = useParams();
   const router = useRouter();
-  const { user: authUser, isAuthenticated } = useAuth();
+  const { user: authUser, isAuthenticated, isAdmin } = useAuth(); // Add isAdmin
   
   const postIdFromParams = params?.id as string;
 
@@ -105,7 +105,7 @@ export default function SinglePostPage() {
   }
 
   // Check if the authenticated user is the author of the post
-  const isOwner = isAuthenticated && authUser && post.author && authUser.username === post.author.username;
+  const isOwnerOrAdmin = isAuthenticated && authUser && post.author && (authUser.username === post.author.username || isAdmin);
 
   return (
     <main className="container mx-auto p-4 md:p-8">
@@ -113,16 +113,13 @@ export default function SinglePostPage() {
         <Link href="/" className="text-blue-500 hover:underline">
           &larr; Back to All Posts
         </Link>
-        {isOwner && (
-          <div className="flex space-x-2">
+        {/* Show Edit/Delete buttons only if user is authenticated and is the author OR is an admin */}
+        {isOwnerOrAdmin && (
+          <div className="mt-4 flex space-x-2">
             <Link href={`/posts/${post.id}/edit`} passHref>
               <Button variant="outline">Edit Post</Button>
             </Link>
-            <Button 
-              variant="destructive" 
-              onClick={handleDelete} 
-              disabled={isDeleting}
-            >
+            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? 'Deleting...' : 'Delete Post'}
             </Button>
           </div>
