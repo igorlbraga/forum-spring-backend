@@ -20,7 +20,7 @@ import java.util.List;
 public class BlogPost {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // Consider GenerationType.IDENTITY for H2/MySQL/Postgres
+    @GeneratedValue(strategy = GenerationType.AUTO) 
     private Long id;
 
     @NotBlank(message = "Title cannot be blank")
@@ -28,11 +28,11 @@ public class BlogPost {
     private String title;
 
     @NotBlank(message = "Content cannot be blank")
-    @Lob // For potentially long content
+    @Lob 
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "user_id") // Name of the foreign key column in blog_post table
+    @JoinColumn(name = "user_id") 
     private User author; 
 
     private LocalDateTime publicationDate;
@@ -40,11 +40,11 @@ public class BlogPost {
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    // Constructors
+    
     public BlogPost() {
     }
 
-    // Updated constructor
+    
     public BlogPost(String title, String content, User author, LocalDateTime publicationDate) {
         this.title = title;
         this.content = content;
@@ -52,7 +52,7 @@ public class BlogPost {
         this.publicationDate = publicationDate;
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
@@ -77,7 +77,7 @@ public class BlogPost {
         this.content = content;
     }
 
-    // Updated getter and setter for author
+    
     public User getAuthor() {
         return author;
     }

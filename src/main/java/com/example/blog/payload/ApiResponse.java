@@ -9,7 +9,7 @@ public class ApiResponse {
         this.message = message;
     }
 
-    // Getters and Setters
+    
     public Boolean getSuccess() {
         return success;
     }

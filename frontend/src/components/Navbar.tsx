@@ -11,12 +11,12 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    router.push('/login'); // Redirect to login page after logout
-    // Optionally, show a toast notification for successful logout
+    router.push('/login'); 
+    
   };
 
   if (isLoading) {
-    // Optional: render a slim loading state or null to avoid layout shift
+    
     return (
         <header className="bg-background border-b">
             <div className="container mx-auto flex items-center justify-between p-4">

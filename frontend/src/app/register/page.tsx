@@ -5,18 +5,18 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { registerUser } from '@/lib/apiService';
 import { RegisterRequest } from '@/types/auth';
-// Shadcn/UI components will be added later
+
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [name, setName] = useState(''); // If you have a name field
+  
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
-  const { login } = useAuth(); // To auto-login after successful registration if backend returns JWT
+  const { login } = useAuth(); 
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -24,18 +24,18 @@ export default function RegisterPage() {
     setError(null);
     setSuccessMessage(null);
 
-    const userData: RegisterRequest = { username, email, password }; // Add name if using
+    const userData: RegisterRequest = { username, email, password }; 
 
     try {
       const responseData = await registerUser(userData);
-      // Assuming registerUser might return JWT in responseData.accessToken
-      // Or it might just be a success message and you redirect to login
+      
+      
       if (responseData && responseData.accessToken) {
-        login(responseData.accessToken); // Auto-login
-        router.push('/'); // Redirect to homepage
+        login(responseData.accessToken); 
+        router.push('/'); 
       } else {
         setSuccessMessage('Registration successful! Please log in.');
-        // Optionally redirect to login page after a delay
+        
         setTimeout(() => {
           router.push('/login');
         }, 2000);

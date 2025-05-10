@@ -16,23 +16,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useRouter } from 'next/navigation'; // For navigation
-import { useAuth } from '@/contexts/AuthContext'; // Import useAuth
-import { createBlogPost } from '@/lib/apiService'; // Import createBlogPost
-import { CreatePostRequest } from '@/types'; // Import CreatePostRequest
+import { useRouter } from 'next/navigation'; 
+import { useAuth } from '@/contexts/AuthContext'; 
+import { createBlogPost } from '@/lib/apiService'; 
+import { CreatePostRequest } from '@/types'; 
 
-// 1. Define the Zod schema for form validation
+
 const formSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters long." }),
   content: z.string().min(10, { message: "Content must be at least 10 characters long." }),
-  // Author field removed as it will be determined by the backend via JWT
+  
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export default function CreatePostForm() {
   const router = useRouter();
-  // 2. Define the form using react-hook-form
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,25 +42,25 @@ export default function CreatePostForm() {
     },
   });
 
-  // 3. Define the submit handler
-  const { isAuthenticated, isLoading: authLoading } = useAuth(); // Get auth state
+  
+  const { isAuthenticated, isLoading: authLoading } = useAuth(); 
 
-  // 3. Define the submit handler
+  
   async function onSubmit(values: FormValues) {
     try {
       if (!isAuthenticated) {
         toast.error("You must be logged in to create a post.");
-        // Optionally, redirect to login or disable form further up
+        
         return;
       }
       const postData: CreatePostRequest = { title: values.title, content: values.content };
-      const newPost = await createBlogPost(postData); // Use apiService
+      const newPost = await createBlogPost(postData); 
       toast.success("Blog post created successfully!");
       
-      // Navigate to the new post's page or to the home page
-      // router.push(`/posts/${newPost.id}`); // If backend returns the full new post with ID
-      router.push("/"); // Or navigate to home page to see the new post in the list
-      router.refresh(); // Refresh server components on the target page
+      
+      
+      router.push("/"); 
+      router.refresh(); 
 
     } catch (error) {
       let errorMessage = "An unexpected error occurred.";
@@ -72,7 +72,7 @@ export default function CreatePostForm() {
     }
   }
 
-  // 4. Build the form structure
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

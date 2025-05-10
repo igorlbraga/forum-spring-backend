@@ -22,7 +22,7 @@ public class Role {
         this.name = name;
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
@@ -44,7 +44,7 @@ public class Role {
         return this.name;
     }
 
-    // Optional: hashCode and equals if roles are added to Sets directly before being persisted
-    // and you need set semantics based on name before ID is generated.
-    // For simplicity with JPA managed entities, usually ID-based equality is sufficient after persistence.
+    
+    
+    
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "users") // Specify table name to avoid conflict with SQL keyword "user"
+@Table(name = "users") 
 public class User {
 
     @Id
@@ -22,8 +22,8 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password cannot be blank")
-    // Password length validation can be more complex depending on hashing, etc.
-    // We won't store raw passwords, so size here is for the input before hashing.
+    
+    
     @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
     @Column(nullable = false)
     private String password;
@@ -34,9 +34,9 @@ public class User {
                inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    // Add a mappedBy relationship if you want to easily access user's posts from User entity
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private Set<BlogPost> posts = new HashSet<>();
+    
+    
+    
 
     public User() {
     }
@@ -46,7 +46,7 @@ public class User {
         this.password = password;
     }
 
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
@@ -79,12 +79,12 @@ public class User {
         this.roles = roles;
     }
 
-    // If you add the posts Set:
-    // public Set<BlogPost> getPosts() {
-    //     return posts;
-    // }
+    
+    
+    
+    
 
-    // public void setPosts(Set<BlogPost> posts) {
-    //     this.posts = posts;
-    // }
+    
+    
+    
 }

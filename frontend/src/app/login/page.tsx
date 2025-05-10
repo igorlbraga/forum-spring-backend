@@ -1,14 +1,14 @@
-'use client'; // Forms and auth interactions require client components
+'use client'; 
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { loginUser } from '@/lib/apiService'; // Import the actual API service
-import { LoginRequest } from '@/types/auth'; // Import the LoginRequest type
-// Shadcn/UI imports will go here later
+import { loginUser } from '@/lib/apiService'; 
+import { LoginRequest } from '@/types/auth'; 
+
 
 export default function LoginPage() {
-  const [usernameOrEmail, setUsernameOrEmail] = useState(''); // Changed from username to usernameOrEmail
+  const [usernameOrEmail, setUsernameOrEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function LoginPage() {
       
       if (data.accessToken) {
         login(data.accessToken); 
-        router.push('/'); // Redirect to homepage after login
+        router.push('/'); 
       } else {
         throw new Error('Login failed: No access token received.');
       }

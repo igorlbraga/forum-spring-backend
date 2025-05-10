@@ -13,7 +13,7 @@ public class UpdatePostDto {
     @Size(min = 10, message = "Content must be at least 10 characters")
     private String content;
 
-    // Getters and Setters
+    
     public String getTitle() {
         return title;
     }

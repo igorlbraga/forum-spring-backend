@@ -7,13 +7,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Assuming you have a Textarea component
+import { Textarea } from "@/components/ui/textarea"; 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { getBlogPostById, updateBlogPost } from '@/lib/apiService';
 import { UpdatePostRequest, BlogPost } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner'; // Or your preferred toast library
+import { toast } from 'sonner'; 
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -52,7 +52,7 @@ export default function EditPostPage() {
       return;
     }
 
-    if (authLoading) { // Wait for authentication to resolve
+    if (authLoading) { 
       return;
     }
 
@@ -60,7 +60,7 @@ export default function EditPostPage() {
       setError("You must be logged in to edit a post.");
       setLoading(false);
       setIsAuthorized(false);
-      // router.push('/login'); // Optional: redirect to login
+      
       return;
     }
 
@@ -105,7 +105,7 @@ export default function EditPostPage() {
       };
       await updateBlogPost(post.id, updatedPostData);
       toast.success("Post updated successfully!");
-      router.push(`/posts/${post.id}`); // Redirect to the updated post page
+      router.push(`/posts/${post.id}`); 
     } catch (err: any) {
       console.error("Failed to update post:", err);
       const errorMessage = err.response?.data?.message || err.message || "An unknown error occurred.";
@@ -120,7 +120,7 @@ export default function EditPostPage() {
     return <div className="container mx-auto p-4 text-center">Loading...</div>;
   }
 
-  if (!isAuthenticated) { // Should be caught by useEffect, but as a fallback
+  if (!isAuthenticated) { 
     return (
       <div className="container mx-auto p-4 text-center">
         <p className="text-red-500">You must be logged in to edit posts.</p>
@@ -129,7 +129,7 @@ export default function EditPostPage() {
     );
   }
 
-  if (error && !isAuthorized) { // If there was an error AND they are not authorized
+  if (error && !isAuthorized) { 
     return (
       <div className="container mx-auto p-4 text-center">
         <p className="text-red-500">Error: {error}</p>
@@ -140,7 +140,7 @@ export default function EditPostPage() {
     );
   }
 
-  if (!isAuthorized && !loading) { // Explicitly not authorized after loading and auth check
+  if (!isAuthorized && !loading) { 
     return (
       <div className="container mx-auto p-4 text-center">
         <p className="text-red-500">You are not authorized to edit this post.</p>
@@ -151,7 +151,7 @@ export default function EditPostPage() {
     );
   }
 
-  if (!post) { // Should not happen if authorized, but as a safeguard
+  if (!post) { 
     return <div className="container mx-auto p-4 text-center">Post data not available.</div>;
   }
 

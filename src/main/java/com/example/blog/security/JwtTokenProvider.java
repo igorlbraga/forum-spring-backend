@@ -40,8 +40,8 @@ public class JwtTokenProvider {
     public void init() {
         if (jwtSecretString == null || jwtSecretString.length() < 64) {
             logger.warn("app.jwtSecret is not configured or is too short (requires at least 64 characters for HS512). Using a default, insecure key. PLEASE CONFIGURE a strong app.jwtSecret in application.properties.");
-            // This default key is for development convenience ONLY and is INSECURE for production.
-            this.jwtSecretKey = Jwts.SIG.HS512.key().build(); // Modern way to generate a key for an algorithm
+            
+            this.jwtSecretKey = Jwts.SIG.HS512.key().build(); 
         } else {
             this.jwtSecretKey = Keys.hmacShaKeyFor(jwtSecretString.getBytes());
         }
@@ -64,7 +64,7 @@ public class JwtTokenProvider {
                 .claims(claims)
                 .issuedAt(new Date())
                 .expiration(expiryDate)
-                .signWith(jwtSecretKey) // Algorithm is inherent in the SecretKey or inferred by JJWT
+                .signWith(jwtSecretKey) 
                 .compact();
     }
 
@@ -73,7 +73,7 @@ public class JwtTokenProvider {
                 .verifyWith(jwtSecretKey)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload(); // Replaced getBody() with getPayload() for JJWT 0.12.x
+                .getPayload(); 
         return claims.getSubject();
     }
 
@@ -81,7 +81,7 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().verifyWith(jwtSecretKey).build().parseSignedClaims(authToken);
             return true;
-        } catch (SignatureException ex) { // io.jsonwebtoken.security.SignatureException
+        } catch (SignatureException ex) { 
             logger.error("Invalid JWT signature: {}", ex.getMessage());
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token: {}", ex.getMessage());

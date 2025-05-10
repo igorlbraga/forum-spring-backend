@@ -1,8 +1,8 @@
-'use client'; // Convert to Client Component
+'use client'; 
 
-import { BlogPost, User } from "@/types"; // Comment type removed
+import { BlogPost, User } from "@/types"; 
 import Link from "next/link";
-import { getBlogPostById, deleteBlogPost } from "@/lib/apiService"; // Comment API functions removed
+import { getBlogPostById, deleteBlogPost } from "@/lib/apiService"; 
 import {
   Card,
   CardContent,
@@ -14,16 +14,16 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-// Textarea, Avatar and icons removed
 
-import CommentSection from '@/components/CommentSection'; // Import the new component
 
-// Interface for props is not needed for client component fetching its own data via params
+import CommentSection from '@/components/CommentSection'; 
+
+
 
 export default function SinglePostPage() {
   const params = useParams();
   const router = useRouter();
-  const { user: authUser, isAuthenticated, isAdmin } = useAuth(); // Add isAdmin
+  const { user: authUser, isAuthenticated, isAdmin } = useAuth(); 
   
   const postIdFromParams = params?.id as string;
 
@@ -33,7 +33,7 @@ export default function SinglePostPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  // Comment states removed
+  
 
   useEffect(() => {
     if (postIdFromParams) {
@@ -47,22 +47,22 @@ export default function SinglePostPage() {
       const fetchPost = async () => {
         setLoading(true);
         setError(null);
-        // Comment loading states removed
+        
         try {
           const fetchedPost = await getBlogPostById(numericId);
           setPost(fetchedPost);
-          // Fetch comments logic removed - handled by CommentSection
+          
         } catch (err: any) {
           console.error(`Failed to fetch post ${numericId}:`, err);
           if (err.message.includes("404") || (err.response && err.response.status === 404)) {
-            setError("Post not found."); // More specific error for 404
+            setError("Post not found."); 
           } else {
             setError(err.message || 'Could not fetch the blog post.');
           }
           setPost(null);
         }
         setLoading(false);
-        // Comment loading state removed
+        
       };
       fetchPost();
     }
@@ -74,14 +74,14 @@ export default function SinglePostPage() {
     setDeleteError(null);
     try {
       await deleteBlogPost(post.id);
-      // Optional: Show a success toast/message
-      router.push('/'); // Redirect to homepage after deletion
+      
+      router.push('/'); 
     } catch (err: any) {
       console.error(`Failed to delete post ${post.id}:`, err);
       setDeleteError(err.message || 'Could not delete the post.');
       setIsDeleting(false);
     }
-    // No need to setIsDeleting(false) on success due to redirect
+    
   };
 
   if (loading) {
@@ -100,8 +100,8 @@ export default function SinglePostPage() {
   }
 
   if (!post) {
-    // This case should ideally be covered by the error state if fetchPost fails to find a post.
-    // If error is null but post is null, it means ID was invalid or not processed.
+    
+    
     return (
       <div className="container mx-auto p-4 text-center">
         <p>Post not found or ID is invalid.</p>
@@ -112,7 +112,7 @@ export default function SinglePostPage() {
     );
   }
 
-  // Check if the authenticated user is the author of the post
+  
   const isOwnerOrAdmin = isAuthenticated && authUser && post.author && (authUser.username === post.author.username || isAdmin);
 
   return (

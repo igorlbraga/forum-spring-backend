@@ -11,7 +11,7 @@ public class BlogPostSummaryDTO {
     private User author;
     private long commentCount;
 
-    // Constructor for JPQL query
+    
     public BlogPostSummaryDTO(Long id, String title, LocalDateTime publicationDate, User author, long commentCount) {
         this.id = id;
         this.title = title;
@@ -20,7 +20,7 @@ public class BlogPostSummaryDTO {
         this.commentCount = commentCount;
     }
 
-    // Getters
+    
     public Long getId() {
         return id;
     }
@@ -41,7 +41,7 @@ public class BlogPostSummaryDTO {
         return commentCount;
     }
 
-    // Setters (optional, but good practice for DTOs if they might be constructed differently elsewhere)
+    
     public void setId(Long id) {
         this.id = id;
     }

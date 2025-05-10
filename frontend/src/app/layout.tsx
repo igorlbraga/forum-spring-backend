@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"; // Added import for Toaster
-import { Providers } from "./providers"; // Import the new Providers component
-import Navbar from "@/components/Navbar"; // Import the Navbar component
+import { Toaster } from "@/components/ui/sonner"; 
+import { Providers } from "./providers"; 
+import Navbar from "@/components/Navbar"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blog App", // Updated title
-  description: "A simple blog application using Next.js and Spring Boot", // Updated description
+  title: "Blog App", 
+  description: "A simple blog application using Next.js and Spring Boot", 
 };
 
 export default function RootLayout({

@@ -17,11 +17,11 @@ public class Comment {
     @Column(nullable = false, updatable = false)
     private LocalDateTime publicationDate;
 
-    @ManyToOne(fetch = FetchType.EAGER) // EAGER para carregar o autor junto com o comentário
+    @ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY é o padrão, mas explícito aqui
+    @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "blog_post_id", nullable = false)
     private BlogPost blogPost;
 
@@ -30,7 +30,7 @@ public class Comment {
         publicationDate = LocalDateTime.now();
     }
 
-    // Construtores
+    
     public Comment() {
     }
 
@@ -40,7 +40,7 @@ public class Comment {
         this.blogPost = blogPost;
     }
 
-    // Getters e Setters
+    
     public Long getId() {
         return id;
     }

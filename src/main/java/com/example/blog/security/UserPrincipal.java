@@ -18,7 +18,7 @@ public class UserPrincipal implements UserDetails {
 
     private String username;
 
-    @JsonIgnore // Evita que a senha seja serializada em respostas JSON
+    @JsonIgnore 
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
@@ -64,22 +64,22 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Para JWT, geralmente não gerenciamos expiração de conta aqui
+        return true; 
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Similarmente, o bloqueio de conta é tratado em outro lugar
+        return true; 
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // JWT tem sua própria expiração
+        return true; 
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // Assumimos que o usuário está habilitado se um UserPrincipal é criado
+        return true; 
     }
 
     @Override

@@ -4,9 +4,9 @@ import com.example.blog.model.User;
 import com.example.blog.payload.ApiResponse;
 import com.example.blog.payload.LoginRequest;
 import com.example.blog.payload.RegisterRequest;
-import com.example.blog.payload.JwtAuthenticationResponse; // Added
+import com.example.blog.payload.JwtAuthenticationResponse; 
 import com.example.blog.repository.UserRepository;
-import com.example.blog.security.JwtTokenProvider; // Added
+import com.example.blog.security.JwtTokenProvider; 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class AuthController {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    JwtTokenProvider tokenProvider; // Added
+    JwtTokenProvider tokenProvider; 
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -56,13 +56,13 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Creating user's account
+        
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
-        // In a real app, you would assign roles here
-        // user.setRoles(new HashSet<>(Collections.singletonList(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User Role not set.")))));
+        
+        
 
         userRepository.save(user);
 

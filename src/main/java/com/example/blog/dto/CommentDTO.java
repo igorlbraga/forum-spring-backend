@@ -10,7 +10,7 @@ public class CommentDTO {
     private Long authorId;
     private Long postId;
 
-    // Construtores
+    
     public CommentDTO() {
     }
 
@@ -23,7 +23,7 @@ public class CommentDTO {
         this.postId = postId;
     }
 
-    // Getters e Setters
+    
     public Long getId() {
         return id;
     }

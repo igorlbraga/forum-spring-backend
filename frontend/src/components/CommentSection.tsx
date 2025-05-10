@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserCircle, CalendarDays, Trash2 } from 'lucide-react'; // Added Trash2 for delete
+import { UserCircle, CalendarDays, Trash2 } from 'lucide-react'; 
 
 interface CommentSectionProps {
   postId: number;

@@ -14,15 +14,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.lang.NonNull; // Added import
+import org.springframework.lang.NonNull; 
 
 import java.io.IOException;
 
-@Component // So it can be picked up by Spring
+@Component 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;
-    private final UserDetailsServiceImpl userDetailsService; // Corrected type to UserDetailsServiceImpl
+    private final UserDetailsServiceImpl userDetailsService; 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsServiceImpl userDetailsService) {

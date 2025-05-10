@@ -1,7 +1,7 @@
 export interface Comment {
   id: number;
   content: string;
-  publicationDate: string; // Ou Date, dependendo de como for parseado
+  publicationDate: string; 
   authorUsername: string;
   authorId: number;
   postId: number;
@@ -16,10 +16,10 @@ export interface User {
 export interface BlogPost {
   id: number; 
   title: string;
-  content: string; // This might be a summary if we change the DTO further, but for now assume full content or handled by another field
-  author: User | null; // Or a simpler AuthorSummary type
+  content: string; 
+  author: User | null; 
   publicationDate: string; 
-  commentCount: number; // Added for summary
+  commentCount: number; 
 }
 
 /**

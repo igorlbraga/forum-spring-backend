@@ -42,7 +42,7 @@ public class CommentController {
     @Autowired
     private UserRepository userRepository;
 
-    // Endpoint para buscar todos os comentários de um post específico
+    
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable Long postId) {
         if (!blogPostRepository.existsById(postId)) {
@@ -55,7 +55,7 @@ public class CommentController {
         return ResponseEntity.ok(commentDTOs);
     }
 
-    // Endpoint para criar um novo comentário em um post
+    
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentDTO> createComment(@PathVariable Long postId,
             @Valid @RequestBody CommentDTO commentDTO) {
@@ -69,15 +69,15 @@ public class CommentController {
                 .orElse(null);
 
         if (blogPost == null) {
-            return ResponseEntity.notFound().build(); // Ou ResponseEntity.badRequest().body("Post não encontrado");
+            return ResponseEntity.notFound().build(); 
         }
 
         User user = userRepository.findByUsername(authentication.getName())
                 .orElse(null);
 
         if (user == null) {
-            // Isso não deve acontecer se o usuário estiver autenticado, mas é uma boa
-            // verificação
+            
+            
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -85,14 +85,14 @@ public class CommentController {
         comment.setContent(commentDTO.getContent());
         comment.setBlogPost(blogPost);
         comment.setUser(user);
-        // A data de publicação é definida automaticamente pelo @PrePersist na entidade
-        // Comment
+        
+        
 
         Comment savedComment = commentRepository.save(comment);
         return new ResponseEntity<>(convertToDto(savedComment), HttpStatus.CREATED);
     }
 
-    // Método utilitário para converter Entidade Comment para CommentDTO
+    
     private CommentDTO convertToDto(Comment comment) {
         return new CommentDTO(
                 comment.getId(),
@@ -103,7 +103,7 @@ public class CommentController {
                 comment.getBlogPost().getId());
     }
 
-    // Endpoint para deletar um comentário
+    
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -130,7 +130,7 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
-    // Endpoint para atualizar um comentário
+    
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId,
             @Valid @RequestBody CommentDTO commentDTO) {
@@ -148,11 +148,11 @@ public class CommentController {
         boolean isAuthor = comment.getUser().getUsername().equals(authentication.getName());
 
         if (!isAuthor) {
-            // Apenas o autor pode editar seu próprio comentário
+            
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // Atualiza apenas o conteúdo do comentário
+        
         comment.setContent(commentDTO.getContent());
         Comment updatedComment = commentRepository.save(comment);
 
