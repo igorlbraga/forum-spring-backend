@@ -74,6 +74,7 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
   const response = await fetch(`${API_BASE_URL}/api/posts`); 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({})) as ApiErrorResponse;
+    console.error("Error fetching posts:", errorData);
     throw new Error(errorData.message || `Failed to fetch posts: ${response.status}`);
   }
   return response.json() as Promise<BlogPost[]>;

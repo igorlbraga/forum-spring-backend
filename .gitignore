@@ -28,7 +28,7 @@ dependency-reduced-pom.xml
 
 # Environment variables at root (if any)
 .env
-.env*.local
+.env
 
 # Temporary files
 *.tmp

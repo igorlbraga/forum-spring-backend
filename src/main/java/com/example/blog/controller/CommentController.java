@@ -48,7 +48,7 @@ public class CommentController {
         if (!blogPostRepository.existsById(postId)) {
             return ResponseEntity.notFound().build();
         }
-        List<Comment> comments = commentRepository.findByBlogPostIdOrderByPublicationDateDesc(postId);
+        List<Comment> comments = commentRepository.findByBlogPost_IdOrderByPublicationDate(postId);
         List<CommentDTO> commentDTOs = comments.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());

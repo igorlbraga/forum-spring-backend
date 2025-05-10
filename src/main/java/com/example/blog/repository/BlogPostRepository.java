@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface BlogPostRepository extends JpaRepository<BlogPost, Long> {
 
-    @Query("SELECT new com.example.blog.dto.BlogPostSummaryDTO(p.id, p.title, p.publicationDate, p.author, COUNT(c.id)) FROM BlogPost p LEFT JOIN p.comments c GROUP BY p.id, p.title, p.publicationDate, p.author.username ORDER BY p.publicationDate DESC")
+    @Query("SELECT new com.example.blog.dto.BlogPostSummaryDTO(p.id, p.title, p.publicationDate, p.author, COUNT(c.id)) FROM BlogPost p INNER JOIN p.author LEFT JOIN p.comments c GROUP BY p.id, p.title, p.publicationDate, p.author ORDER BY p.publicationDate DESC")
     List<BlogPostSummaryDTO> findAllPostSummaries();
 
     // You can add custom query methods here if needed later

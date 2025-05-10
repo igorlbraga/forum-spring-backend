@@ -11,7 +11,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob // Para textos mais longos, pode ser mapeado para TEXT, CLOB, etc. dependendo do DB
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
