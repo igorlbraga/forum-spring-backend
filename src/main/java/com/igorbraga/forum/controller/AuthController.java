@@ -5,7 +5,7 @@ import com.igorbraga.forum.domain.auth.RegisterDTO;
 import com.igorbraga.forum.domain.user.Role;
 import com.igorbraga.forum.domain.user.User;
 import com.igorbraga.forum.domain.auth.ApiResponse;
-import com.igorbraga.forum.domain.auth.JwtAuthenticationResponse;
+import com.igorbraga.forum.domain.auth.AuthenticationResponseDTO;
 import com.igorbraga.forum.repository.RoleRepository;
 import com.igorbraga.forum.repository.UserRepository;
 import com.igorbraga.forum.security.JwtTokenProvider;
@@ -15,12 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
@@ -39,11 +44,11 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationDTO requestData) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationDTO requestData) throws AuthenticationException {
         var loginToken = new UsernamePasswordAuthenticationToken(requestData.getLogin(), requestData.getPassword());
         Authentication authentication = authenticationManager.authenticate(loginToken);
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponseDTO(jwt));
     }
 
     @PostMapping("/register")
@@ -64,5 +69,13 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "User registered successfully"));
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthenticationException.class)
+    public Map<String, String> handleUsernameNotFoundException(AuthenticationException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return error;
     }
 }

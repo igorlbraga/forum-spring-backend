@@ -1,8 +1,9 @@
 package com.igorbraga.forum.controller;
 
-import com.igorbraga.forum.domain.post.UpdatePostDTO;
-import com.igorbraga.forum.domain.post.PostSummary;
 import com.igorbraga.forum.domain.post.Post;
+import com.igorbraga.forum.domain.post.PostResponseDTO;
+import com.igorbraga.forum.domain.post.PostSummary;
+import com.igorbraga.forum.domain.post.UpdatePostDTO;
 import com.igorbraga.forum.domain.user.User;
 import com.igorbraga.forum.repository.PostRepository;
 import com.igorbraga.forum.repository.UserRepository;
@@ -24,10 +25,11 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/posts")
 public class PostController {
     private final PostRepository postRepository;
-    private final  UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public PostController(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
@@ -39,7 +41,7 @@ public class PostController {
         return postRepository.findAllPostSummaries();
     }
 
-    
+
     @PostMapping
     public ResponseEntity<Post> createBlogPost(@Valid @RequestBody Post post) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,15 +56,18 @@ public class PostController {
         return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
     }
 
-    
+
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        Optional<Post> post = postRepository.findById(id);
-        return post.map(ResponseEntity::ok)
-                       .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<PostResponseDTO> getPostById(@PathVariable Long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+        return postOptional
+                .map(post -> ResponseEntity.ok(
+                        new PostResponseDTO(post.getId(), post.getTitle(), post.getContent(), post.getPublicationDate(), post.getAuthor(), post.getComments()
+                        )))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBlogPost(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -76,38 +81,38 @@ public class PostController {
         Post postToDelete = blogPostOptional.get();
 
         if (postToDelete.getAuthor() == null) {
-             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Post has no author, cannot verify ownership.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Post has no author, cannot verify ownership.");
         }
 
         boolean isAdmin = authentication.getAuthorities().stream()
-            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
 
         if (!isAdmin && !postToDelete.getAuthor().getUsername().equals(currentUsername)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); 
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         postRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO updatePostDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
         User authenticatedUser = userRepository.findByUsernameOrEmail(currentUsername, currentUsername)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found during post update: " + currentUsername));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found during post update: " + currentUsername));
 
         Post postToUpdate = postRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found with id: " + id));
 
         boolean isAdmin = authentication.getAuthorities().stream()
-            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
 
-        
+
         if (!isAdmin && (postToUpdate.getAuthor() == null || !postToUpdate.getAuthor().getId().equals(authenticatedUser.getId()))) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); 
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         postToUpdate.setTitle(updatePostDto.getTitle());
@@ -117,7 +122,7 @@ public class PostController {
         return ResponseEntity.ok(updatedPost);
     }
 
-    
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -130,7 +135,7 @@ public class PostController {
         return errors;
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED) 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UsernameNotFoundException.class)
     public Map<String, String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
